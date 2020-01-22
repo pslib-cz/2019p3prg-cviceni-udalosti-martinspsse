@@ -8,6 +8,7 @@ namespace WaterDetector
     class WaterTank
     {
         private int _value = 0;
+        private int _capacity = 0;
 
         public WaterTank(int capacity, string name)
         {
@@ -16,9 +17,40 @@ namespace WaterDetector
             Reset();
         }
 
-        public int Capacity { get; }
+        public int Capacity
+        {
+            get
+            {
+                return _capacity;
+            }
+
+            set
+            {
+                _capacity = Capacity;
+                _value = value;
+
+                if (_value >= _capacity)
+                {
+                    CapacityMessage?.Invoke(this, new EventArgs(value, capacity: Capacity));
+                }
+
+            }
+        }
         public string Name { get; }
-        public int CurrentValue { get { return _value; } }
+        public int CurrentValue
+        {
+            get
+            {
+                return _value;
+            }
+
+            set
+            {
+                _value = value;
+                ValueHasChanged?.Invoke(this, new EventArgs(value, capacity: Capacity));
+            }
+        }
+
         public void Reset()
         {
             _value = 0;
@@ -28,5 +60,8 @@ namespace WaterDetector
         {
             _value += value;
         }
+
+        public event EventHandler ValueHasChanged;
+        public event EventHandler CapacityMessage;
     }
 }
